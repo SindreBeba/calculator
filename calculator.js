@@ -66,7 +66,11 @@ function handleOperator(inputValue) {
             clear();
             break;
         case 'back':
-            backspace();
+            if (lastAction === 'equals') {
+                clear();
+            } else {
+                backspace();
+            }
             break;
         case 'divide':
         case 'multiply':
@@ -104,7 +108,7 @@ function clear() {
 }
 
 function backspace() {
-    if (outputValue.length <= 1) {
+    if (lastAction !== 'number' || outputValue.length <= 1) {
         outputValue = '0';
     } else {
         outputValue = outputValue.slice(0, -1);
