@@ -1,0 +1,21 @@
+{
+  "name": "calculator",
+  "version": "1.0.0",
+  "description": "Simple calculator written in JavaScript as a learning exercise.",
+  "author": "Sindre Beba",
+  "private": "true",
+  "license": "MIT",
+  "scripts": {
+    "clear": "rm -rf dist",
+    "predev": "npm run clear",
+    "dev": "parcel src/index.html",
+    "prebuild": "npm run clear",
+    "build": "parcel build src/index.html --public-url ./",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d ./dist -b gh-pages"
+  },
+  "devDependencies": {
+    "gh-pages": "^3.2.3",
+    "parcel": "^2.5.0"
+  }
+}
