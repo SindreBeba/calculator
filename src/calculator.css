@@ -1,63 +1,97 @@
+
+/* Global styles */
+
 * {
     box-sizing: border-box;
+    margin: 0;
 }
 
 body {
-    align-items: center;
-    background-color: #eee;
-    display: flex;
-    flex-direction: column;
+    height: 100vh;
 }
 
-.page-title {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 50px;
-    font-weight: normal;
+#container {
+    height: 100%;
+    width: 100%;
+    background-color: #eee;
+    font-family: Verdana, Tahoma, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
+
+/* Header and footer styles */
+
+header, footer {
+    height: 75px;
+    width: 100%;
+}
+
+footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.github-link {
+    color: black;
+    font-size: 30px;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.github-logo {
+    height: 45px;
+}
+
+/* Calculator styles */
 
 .calc {
-    background-color: #333;
-    border: #333 solid 5px;
+    height: 600px;
+    width: 400px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
     justify-content: space-between;
-    height: 720px;
-    width: 480px;
+    gap: 7.5px;
 }
 
 .calc-row {
     display: flex;
-    flex: 1;
-    gap: 5px;
     justify-content: space-between;
+    flex: 1;
+    gap: 7.5px;
 }
 
 .output {
-    align-items: center;
-    background-color: #333;
-    color: white;
-    display: flex;
-    font-family: monospace;
-    font-size: 50px;
-    justify-content: flex-end;
-    margin: 5px 20px 0 20px;
-    padding: 0 10px;;
     width: 100%;
+    padding: 0 15px;
+    background-color: #e3e3e3;
+    border: 2px solid #bbb;
+    border-radius: 25px;
+    color: #222;
+    font-size: 37.5px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 }
 
 .btn {
-    align-items: center;
+    padding: 0;
     background-color: #bbb;
     border: none;
+    border-radius: 25px;
     cursor: pointer;
+    color: #222;
+    font-family: inherit;
+    font-size: 30px;
     display: flex;
-    flex: 1;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 40px;
-    font-weight: bold;
     justify-content: center;
-    padding: 0;
+    align-items: center;
+    flex: 1;
 }
 
 .btn:hover {
@@ -69,11 +103,11 @@ body {
 }
 
 .xl-btn {
-    flex: 2.04;
+    flex: 2.05;
 }
 
 .xxl-btn {
-    flex: 3.08;
+    flex: 3.1;
 }
 
 .btn:last-child {
@@ -89,77 +123,74 @@ body {
     background-color: rgb(218, 135, 67);
 }
 
-@media only screen and (max-width: 520px) {
+@media (max-width: 400px) and (max-aspect-ratio: 8/15) {
+    header, footer {
+        height: 18.75vw;
+    }
+
+    .github-link {
+        font-size: 7.5vw;
+        gap: 7.5vw;
+    }
+
+    .github-logo {
+        height: 11.25vw;
+    }
+
     .calc {
-        border-width: 4px;
-        height: 576px;
-        width: 384px;
+        height: 150vw;
+        width: 100vw;
+        gap: 1.875vw;
+    }
+
+    .calc-row {
+        gap: 1.875vw;
     }
 
     .output {
-        margin: 4px 16px 0 16px;
-        padding: 0 8px;
+        padding: 0 3.75vw;
+        border-radius: 6.25vw;
+        font-size: 9.375vw;
     }
 
-    .calc, .calc-row {
-        gap: 4px;
-    }
-
-    .page-title {
-        font-size: 40px;
-    }
-
-    .output, .btn {
-        font-size: 32px;
+    .btn {
+        border-radius: 6.25vw;
+        font-size: 7.5vw;
     }
 }
 
-@media only screen and (max-width: 415px) {
+@media (max-height: 750px) and (min-aspect-ratio: 8/15) {
+    header, footer {
+        height: 10vh;
+    }
+
+    .github-link {
+        font-size: 4vh;
+        gap: 4vh;
+    }
+
+    .github-logo {
+        height: 6vh;
+    }
+
     .calc {
-        border-width: 3px;
-        height: 432px;
-        width: 288px;
+        height: 80vh;
+        width: 53.33vh;
+        gap: 1vh;
+    }
+
+    .calc-row {
+        gap: 1vh;
     }
 
     .output {
-        margin: 3px 12px 0 12px;
-        padding: 0 6px;;
+        padding: 0 2vh;
+        border-radius: 3.33vh;
+        font-size: 5vh;
     }
 
-    .calc, .calc-row {
-        gap: 3px;
-    }
-
-    .page-title {
-        font-size: 30px;
-    }
-
-    .output, .btn {
-        font-size: 24px;
-    }
-}
-
-@media only screen and (max-width: 310px) {
-    .calc {
-        border-width: 2px;
-        height: 288px;
-        width: 192px;
-    }
-
-    .output {
-        margin: 2px 8px 0 8px;
-        padding: 0 4px;;
-    }
-
-    .calc, .calc-row {
-        gap: 2px;
-    }
-
-    .page-title {
-        font-size: 20px;
-    }
-
-    .output, .btn {
-        font-size: 16px;
+    .btn {
+        border-radius: 3.33vh;
+        font-size: 4vh;
     }
 }
