@@ -1,11 +1,13 @@
+import { Button } from "./button";
+
 // Variables used to store calculator state
 
 let selectedOperator;
 let runningTotal = 0;
 let currentOperand = 0;
-let lastAction = "equals"; // number, operator, equals
+let lastAction = Button.EQUALS;
 
-let outputValue = "";
+let outputValue = "0";
 
 // HTML element constants
 
@@ -13,22 +15,9 @@ const output = document.querySelector(".output");
 
 // IO functions
 
-function buttonClicked(inputValue) {
-  if (isNaN(parseInt(inputValue))) {
-    handleOperator(inputValue);
-  } else {
-    handleNumber(inputValue);
-  }
-
-  writeOutput();
-  console.log(
-    `State after "${inputValue}": operator: ${selectedOperator}, total: ${runningTotal}, operand: ${currentOperand}, last action: ${lastAction}`
-  );
-}
-
 function writeOutput() {
   if (outputValue.length > 13) {
-    if (lastAction === "number") {
+    if (Button.isNumber(lastAction)) {
       outputValue = outputValue.substr(0, 13);
     } else {
       clear();
@@ -42,93 +31,73 @@ function writeOutput() {
 // Calculator functions
 
 function handleNumber(inputValue) {
-  switch (lastAction) {
-    case "number":
-      if (outputValue === "0") {
-        outputValue = inputValue;
-      } else {
-        outputValue += inputValue;
-      }
-      break;
-    case "operator":
+  if (Button.isNumber(lastAction)) {
+    if (outputValue === "0") {
       outputValue = inputValue;
-      break;
-    case "equals":
-      clear();
-      outputValue = inputValue;
-      break;
+    } else {
+      outputValue += inputValue;
+    }
+  } else if (Button.isOperator(lastAction)) {
+    outputValue = inputValue;
+  } else if (lastAction == Button.EQUALS) {
+    clear();
+    outputValue = inputValue;
   }
 
-  lastAction = "number";
+  lastAction = inputValue;
 }
 
 function handleOperator(inputValue) {
-  switch (inputValue) {
-    case "clear":
-      clear();
-      break;
-    case "back":
-      if (lastAction === "equals") {
-        clear();
-      } else {
-        backspace();
-      }
-      break;
-    case "divide":
-    case "multiply":
-    case "subtract":
-    case "add":
-      if (lastAction === "number") {
-        runningTotal = currentOperand;
-        currentOperand = parseInt(outputValue);
-        execute();
-      }
-      selectedOperator = inputValue;
-      lastAction = "operator";
-      break;
-    case "equals":
-      if (lastAction === "operator") {
-        return;
-      }
-      if (lastAction === "number") {
-        currentOperand = parseInt(outputValue);
-      }
-      execute();
-      lastAction = "equals";
-      break;
-    default:
-      alert(`Error: operator "${inputValue}" is not valid.`);
+  if (Button.isNumber(lastAction)) {
+    runningTotal = currentOperand;
+    currentOperand = parseInt(outputValue);
+    execute();
   }
+  selectedOperator = inputValue;
+  lastAction = inputValue;
 }
 
 function clear() {
   selectedOperator = undefined;
   runningTotal = 0;
   currentOperand = 0;
-  lastAction = "equals";
+  lastAction = Button.EQUALS;
   outputValue = "0";
 }
 
 function backspace() {
-  if (lastAction !== "number" || outputValue.length <= 1) {
+  if (lastAction == Button.EQUALS) {
+    clear();
+  } else if (!Button.isNumber(lastAction) || outputValue.length <= 1) {
     outputValue = "0";
   } else {
     outputValue = outputValue.slice(0, -1);
   }
 }
 
+function equals() {
+  if (Button.isOperator(lastAction)) {
+    return;
+  }
+  if (Button.isNumber(lastAction)) {
+    currentOperand = parseInt(outputValue);
+  }
+  execute();
+  lastAction = Button.EQUALS;
+}
+
 function execute() {
   switch (selectedOperator) {
-    case "divide":
+    case Button.DIVIDE:
       runningTotal = Math.floor(runningTotal / currentOperand);
       break;
-    case "multiply":
+    case Button.MULTIPLY:
       runningTotal = runningTotal * currentOperand;
       break;
-    case "subtract":
+    case Button.SUBTRACT:
       runningTotal = runningTotal - currentOperand;
       break;
-    case "add":
+    case Button.ADD:
       runningTotal = runningTotal + currentOperand;
       break;
     case undefined:
@@ -153,3 +122,27 @@ function init() {
 }
 
 init();
+
+function buttonClicked(buttonValue) {
+  inputHandler(buttonValue);
+  writeOutput();
+  console.log(
+    `State after "${buttonValue}": operator: ${selectedOperator}, total: ${runningTotal}, operand: ${currentOperand}, last action: ${lastAction}`
+  );
+}
+
+function inputHandler(buttonValue) {
+  if (Button.isNumber(buttonValue)) {
+    handleNumber(buttonValue);
+  } else if (Button.isOperator(buttonValue)) {
+    handleOperator(buttonValue);
+  } else if (buttonValue == Button.CLEAR) {
+    clear();
+  } else if (buttonValue == Button.BACKSPACE) {
+    backspace();
+  } else if (buttonValue == Button.EQUALS) {
+    equals();
+  } else {
+    alert(`Error: operator "${buttonValue}" is not valid.`);
+  }
+}
