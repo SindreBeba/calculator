@@ -123,74 +123,82 @@ footer {
     background-color: rgb(218, 135, 67);
 }
 
-@media (max-width: 400px) and (max-aspect-ratio: 8/15) {
+@media (max-width: 457px) and (max-aspect-ratio: 8/15) {
+    #container {
+        justify-content: flex-start;
+    }
+
     header, footer {
-        height: 18.75vw;
+        height: 16.41vw;
     }
 
     .github-link {
-        font-size: 7.5vw;
-        gap: 7.5vw;
+        font-size: 6.56vw;
+        gap: 6.56vw;
     }
 
     .github-logo {
-        height: 11.25vw;
+        height: 9.84vw;
     }
 
     .calc {
-        height: 150vw;
-        width: 100vw;
-        gap: 1.875vw;
+        height: 131.25vw;
+        width: 87.5vw;
+        gap: 1.64vw;
     }
 
     .calc-row {
-        gap: 1.875vw;
+        gap: 1.64vw;
     }
 
     .output {
-        padding: 0 3.75vw;
-        border-radius: 6.25vw;
-        font-size: 9.375vw;
+        padding: 0 3.28vw;
+        border-radius: 5.47vw;
+        font-size: 8.2vw;
     }
 
     .btn {
-        border-radius: 6.25vw;
-        font-size: 7.5vw;
+        border-radius: 5.47vw;
+        font-size: 6.56vw;
     }
 }
 
-@media (max-height: 750px) and (min-aspect-ratio: 8/15) {
+@media (max-height: 857px) and (min-aspect-ratio: 8/15) {
+    #container {
+        justify-content: flex-start;
+    }
+
     header, footer {
-        height: 10vh;
+        height: 8.75vh;
     }
 
     .github-link {
-        font-size: 4vh;
-        gap: 4vh;
+        font-size: 3.5vh;
+        gap: 3.5vh;
     }
 
     .github-logo {
-        height: 6vh;
+        height: 5.25vh;
     }
 
     .calc {
-        height: 80vh;
-        width: 53.33vh;
-        gap: 1vh;
+        height: 70vh;
+        width: 46.67vh;
+        gap: 0.875vh;
     }
 
     .calc-row {
-        gap: 1vh;
+        gap: 0.875vh;
     }
 
     .output {
-        padding: 0 2vh;
-        border-radius: 3.33vh;
-        font-size: 5vh;
+        padding: 0 1.75vh;
+        border-radius: 2.92vh;
+        font-size: 4.375vh;
     }
 
     .btn {
-        border-radius: 3.33vh;
-        font-size: 4vh;
+        border-radius: 2.92vh;
+        font-size: 3.5vh;
     }
 }
