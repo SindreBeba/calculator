@@ -9,6 +9,7 @@ export const Button = Object.freeze({
   CLEAR: "clear",
   BACKSPACE: "back",
   EQUALS: "equals",
+  DECIMAL: "decimal",
 
   isOperator(value) {
     return [this.ADD, this.SUBTRACT, this.MULTIPLY, this.DIVIDE].includes(
@@ -18,5 +19,11 @@ export const Button = Object.freeze({
 
   isNumber(value) {
     return value.length == 1 && !isNaN(parseInt(value));
+  },
+
+  isInput(value) {
+    return (
+      [this.BACKSPACE, this.DECIMAL].includes(value) || this.isNumber(value)
+    );
   },
 });

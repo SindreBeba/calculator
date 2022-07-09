@@ -1,10 +1,11 @@
 import { Button } from "./button";
+import { Decimal } from "decimal.js";
 
 // Variables used to store calculator state
 
 let selectedOperator;
-let runningTotal = 0;
-let currentOperand = 0;
+let runningTotal = new Decimal(0);
+let currentOperand = new Decimal(0);
 let lastAction = Button.EQUALS;
 
 let outputValue = "0";
@@ -17,11 +18,13 @@ const output = document.querySelector(".output");
 
 function writeOutput() {
   if (outputValue.length > 13) {
-    if (Button.isNumber(lastAction)) {
+    if (Button.isInput(lastAction)) {
       outputValue = outputValue.substr(0, 13);
-    } else {
+    } else if (outputValue.indexOf(".") < 0 || outputValue.indexOf(".") >= 12) {
       clear();
       outputValue = "ERROR";
+    } else {
+      outputValue = outputValue.substr(0, 13);
     }
   }
 
@@ -31,7 +34,7 @@ function writeOutput() {
 // Calculator functions
 
 function handleNumber(inputValue) {
-  if (Button.isNumber(lastAction)) {
+  if (Button.isInput(lastAction)) {
     if (outputValue === "0") {
       outputValue = inputValue;
     } else {
@@ -39,39 +42,41 @@ function handleNumber(inputValue) {
     }
   } else if (Button.isOperator(lastAction)) {
     outputValue = inputValue;
-  } else if (lastAction == Button.EQUALS) {
+  } else {
     clear();
     outputValue = inputValue;
   }
-
-  lastAction = inputValue;
 }
 
 function handleOperator(inputValue) {
-  if (Button.isNumber(lastAction)) {
+  if (Button.isInput(lastAction)) {
     runningTotal = currentOperand;
-    currentOperand = parseInt(outputValue);
+    currentOperand = new Decimal(outputValue);
     execute();
   }
   selectedOperator = inputValue;
-  lastAction = inputValue;
 }
 
 function clear() {
   selectedOperator = undefined;
-  runningTotal = 0;
-  currentOperand = 0;
-  lastAction = Button.EQUALS;
+  runningTotal = new Decimal(0);
+  currentOperand = new Decimal(0);
   outputValue = "0";
 }
 
 function backspace() {
   if (lastAction == Button.EQUALS) {
     clear();
-  } else if (!Button.isNumber(lastAction) || outputValue.length <= 1) {
+  } else if (!Button.isInput(lastAction) || outputValue.length <= 1) {
     outputValue = "0";
   } else {
     outputValue = outputValue.slice(0, -1);
+  }
+}
+
+function decimal() {
+  if (outputValue.indexOf(".") < 0) {
+    outputValue += ".";
   }
 }
 
@@ -79,26 +84,25 @@ function equals() {
   if (Button.isOperator(lastAction)) {
     return;
   }
-  if (Button.isNumber(lastAction)) {
-    currentOperand = parseInt(outputValue);
+  if (Button.isInput(lastAction)) {
+    currentOperand = new Decimal(outputValue);
   }
   execute();
-  lastAction = Button.EQUALS;
 }
 
 function execute() {
   switch (selectedOperator) {
     case Button.DIVIDE:
-      runningTotal = Math.floor(runningTotal / currentOperand);
+      runningTotal = runningTotal.dividedBy(currentOperand);
       break;
     case Button.MULTIPLY:
-      runningTotal = runningTotal * currentOperand;
+      runningTotal = runningTotal.times(currentOperand);
       break;
     case Button.SUBTRACT:
-      runningTotal = runningTotal - currentOperand;
+      runningTotal = runningTotal.minus(currentOperand);
       break;
     case Button.ADD:
-      runningTotal = runningTotal + currentOperand;
+      runningTotal = runningTotal.plus(currentOperand);
       break;
     case undefined:
       runningTotal = currentOperand;
@@ -127,7 +131,7 @@ function buttonClicked(buttonValue) {
   inputHandler(buttonValue);
   writeOutput();
   console.log(
-    `State after "${buttonValue}": operator: ${selectedOperator}, total: ${runningTotal}, operand: ${currentOperand}, last action: ${lastAction}`
+    `State after "${buttonValue}": operator: ${selectedOperator}, total: ${runningTotal.toString()}, operand: ${currentOperand.toString()}, last action: ${lastAction}`
   );
 }
 
@@ -140,9 +144,13 @@ function inputHandler(buttonValue) {
     clear();
   } else if (buttonValue == Button.BACKSPACE) {
     backspace();
+  } else if (buttonValue == Button.DECIMAL) {
+    decimal();
   } else if (buttonValue == Button.EQUALS) {
     equals();
   } else {
     alert(`Error: operator "${buttonValue}" is not valid.`);
+    return;
   }
+  lastAction = buttonValue;
 }

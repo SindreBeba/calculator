@@ -23,5 +23,8 @@
     "gh-pages": "^3.2.3",
     "parcel": "^2.5.0",
     "prettier": "^2.6.2"
+  },
+  "dependencies": {
+    "decimal.js": "^10.3.1"
   }
 }
