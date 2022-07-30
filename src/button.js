@@ -26,4 +26,19 @@ export const Button = Object.freeze({
       [this.BACKSPACE, this.DECIMAL].includes(value) || this.isNumber(value)
     );
   },
+
+  toString(value) {
+    switch (value) {
+      case Button.ADD:
+        return "+";
+      case Button.SUBTRACT:
+        return "-";
+      case Button.MULTIPLY:
+        return "×";
+      case Button.DIVIDE:
+        return "÷";
+      default:
+        console.error("Unkown operator error");
+    }
+  },
 });

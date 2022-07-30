@@ -8,11 +8,13 @@ let runningTotal = new Decimal(0);
 let currentOperand = new Decimal(0);
 let lastAction = Button.EQUALS;
 
+let operationOutputValue = "";
 let outputValue = "0";
 
 // HTML element constants
 
-const output = document.querySelector(".output");
+const operationOutput = document.querySelector(".operation");
+const output = document.querySelector(".result");
 
 // IO functions
 
@@ -29,6 +31,8 @@ function writeOutput() {
   }
 
   output.innerText = outputValue;
+  operationOutput.innerText = operationOutputValue;
+  operationOutputValue = "";
 }
 
 // Calculator functions
@@ -62,6 +66,7 @@ function clear() {
   runningTotal = new Decimal(0);
   currentOperand = new Decimal(0);
   outputValue = "0";
+  operationOutputValue = "";
 }
 
 function backspace() {
@@ -91,6 +96,12 @@ function equals() {
 }
 
 function execute() {
+  if (selectedOperator) {
+    operationOutputValue = `${runningTotal
+      .toString()
+      .substr(0, 13)} ${Button.toString(selectedOperator)} ${currentOperand} =`;
+  }
+
   switch (selectedOperator) {
     case Button.DIVIDE:
       runningTotal = runningTotal.dividedBy(currentOperand);
