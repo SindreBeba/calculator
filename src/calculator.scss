@@ -66,7 +66,18 @@ body {
     text-decoration: none;
 }
 
-.github-logo {
+.header-icons {
+    display: flex;
+    gap: 20px;
+}
+
+#dark-mode-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.github-logo, .moon-icon {
     height: 26px;
     padding-top: 4px;
     filter: invert(100%);
@@ -105,6 +116,7 @@ body {
 
 .operation {
     font-size: $operation-font-size;
+    min-height: $operation-font-size * math.div(22.5, 18);
 }
 
 .result {
@@ -180,6 +192,7 @@ body {
 
     .operation {
         font-size: $operation-font-size * $vw-scale;
+        min-height: $operation-font-size * $vw-scale * math.div(22.5, 18);
     }
 
     .result {
@@ -218,6 +231,7 @@ body {
 
     .operation {
         font-size: $operation-font-size * $vh-scale;
+        min-height: $operation-font-size * $vh-scale * math.div(22.5, 18);
     }
 
     .result {
@@ -227,5 +241,46 @@ body {
     .btn {
         border-radius: $btn-border-radius * $vh-scale;
         font-size: $btn-font-size * $vh-scale;
+    }
+}
+
+#container.dark-mode {
+    $background-color: #262626;
+    $output-bg-color: #2f2f2f;
+    $btn-color: #3b3b3b;
+    $btn-alt-color: darken($btn-alt-color, 25);
+    $text-color: #fcfcfc;
+
+    background-color: $background-color;
+    
+    .output {
+        background-color: $output-bg-color;
+        border-color: $btn-color;
+        color: $text-color;
+    }
+
+    .btn {
+        background-color: $btn-color;
+        color: $text-color;
+    }
+
+    .btn:hover {
+        background-color: lighten($btn-color, 5);
+    }
+    
+    .btn:active {
+        background-color: darken($btn-color, 5);
+    }
+
+    .btn:last-child {
+        background-color: $btn-alt-color;
+    }
+    
+    .btn:last-child:hover {
+        background-color: lighten($btn-alt-color, 5);
+    }
+    
+    .btn:last-child:active {
+        background-color: darken($btn-alt-color, 5);
     }
 }

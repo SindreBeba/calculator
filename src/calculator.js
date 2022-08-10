@@ -134,6 +134,11 @@ function init() {
       buttonClicked(event.target.value);
     }
   });
+  document
+    .querySelector("#dark-mode-toggle")
+    .addEventListener("click", function () {
+      document.querySelector("#container").classList.toggle("dark-mode");
+    });
 }
 
 init();
