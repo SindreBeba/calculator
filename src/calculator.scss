@@ -1,0 +1,231 @@
+@use 'sass:math';
+
+/* Color variables */
+
+$background-color: #fcfcfc;
+$output-bg-color: #eaeaea;
+$btn-color: #d2d2d2;
+$header-bg-color: #444444;
+$text-color: #222222;
+$btn-alt-color: rgb(240, 150, 75);
+
+/* Size variables */
+$site-header-margin-bottom: 30px;
+$calc-height: 600px;
+$calc-width: 400px;
+$calc-gap: 7.5px;
+$output-padding: 15px;
+$output-border-radius: 25px;
+$operation-font-size: 18px;
+$result-font-size: 35px;
+$btn-border-radius: 35px;
+$btn-font-size: 30px;
+
+$vw-scale: math.div(131.25vw,600px);
+$vh-scale: math.div(85vh,600px);
+
+/* Global styles */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+body {
+    height: 100vh;
+}
+
+#container {
+    height: 100%;
+    width: 100%;
+    background-color: $background-color;
+    font-family: Verdana, Tahoma, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Header styles */
+
+.site-header {
+    height: 30px;
+    width: 100%;
+    background-color: $header-bg-color;
+    margin-bottom: $site-header-margin-bottom;
+    padding: 0 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-link {
+    font-family: Menlo, Consolas, "Courier New", Courier, monospace;
+    color: $background-color;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.github-logo {
+    height: 26px;
+    padding-top: 4px;
+    filter: invert(100%);
+}
+
+/* Calculator styles */
+
+.calc {
+    height: $calc-height;
+    width: $calc-width;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: $calc-gap;
+}
+
+.calc-row {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+    gap: $calc-gap;
+}
+
+.output {
+    width: 100%;
+    padding: 0 $output-padding;
+    background-color: $output-bg-color;
+    border: 2px solid $btn-color;
+    border-radius: $output-border-radius;
+    color: $text-color;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-end;
+}
+
+.operation {
+    font-size: $operation-font-size;
+}
+
+.result {
+    font-size: $result-font-size;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.btn {
+    padding: 0;
+    background-color: $btn-color;
+    border: none;
+    border-radius: $btn-border-radius;
+    cursor: pointer;
+    color: $text-color;
+    font-family: inherit;
+    font-size: $btn-font-size;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+
+.btn:hover {
+    background-color: lighten($btn-color, 5);
+}
+
+.btn:active {
+    background-color: darken($btn-color, 5);
+}
+
+.btn-xl {
+    flex: 2.05;
+}
+
+.btn:last-child {
+    background-color: $btn-alt-color;
+    color: white;
+}
+
+.btn:last-child:hover {
+    background-color: lighten($btn-alt-color, 5);
+}
+
+.btn:last-child:active {
+    background-color: darken($btn-alt-color, 5);
+}
+
+@media (max-width: 457px) and (max-aspect-ratio: 2/3) {
+    #container {
+        justify-content: flex-start;
+    }
+
+    .site-header {
+        margin-bottom: $site-header-margin-bottom * $vw-scale;
+    }
+
+    .calc {
+        height:  $calc-height * $vw-scale;
+        width: $calc-width * $vw-scale;
+        gap: $calc-gap * $vw-scale;
+    }
+
+    .calc-row {
+        gap: $calc-gap * $vw-scale;
+    }
+
+    .output {
+        padding: 0 $output-padding * $vw-scale;
+        border-radius: $output-border-radius * $vw-scale;
+    }
+
+    .operation {
+        font-size: $operation-font-size * $vw-scale;
+    }
+
+    .result {
+        font-size: $result-font-size * $vw-scale;
+    }
+
+    .btn {
+        border-radius: $btn-border-radius * $vw-scale;
+        font-size: $btn-font-size * $vw-scale;
+    }
+}
+
+@media (max-height: 690px) and (min-aspect-ratio: 2/3) {
+    #container {
+        justify-content: flex-start;
+    }
+
+    .site-header {
+        margin-bottom: $site-header-margin-bottom * $vh-scale;
+    }
+
+    .calc {
+        height: $calc-height * $vh-scale;
+        width: $calc-width * $vh-scale;
+        gap: $calc-gap * $vh-scale;
+    }
+
+    .calc-row {
+        gap: $calc-gap * $vh-scale;
+    }
+
+    .output {
+        padding: 0 $output-padding * $vh-scale;
+        border-radius: $output-border-radius * $vh-scale;
+    }
+
+    .operation {
+        font-size: $operation-font-size * $vh-scale;
+    }
+
+    .result {
+        font-size: $result-font-size * $vh-scale;
+    }
+
+    .btn {
+        border-radius: $btn-border-radius * $vh-scale;
+        font-size: $btn-font-size * $vh-scale;
+    }
+}
