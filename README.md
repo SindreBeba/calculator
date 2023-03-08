@@ -1,3 +1,3 @@
 # Calculator
 
-Simple calculator written in JavaScript as a learning exercise.
+A calculator written in JavaScript using XState as a learning exercise.

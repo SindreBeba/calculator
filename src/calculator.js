@@ -1,129 +1,70 @@
+import { CalculatorMachine } from "./calculatorState";
 import { Button } from "./button";
 import { Decimal } from "decimal.js";
-
-// Variables used to store calculator state
-
-let selectedOperator;
-let runningTotal = new Decimal(0);
-let currentOperand = new Decimal(0);
-let lastAction = Button.EQUALS;
-
-let operationOutputValue = "";
-let outputValue = "0";
+import { interpret } from "xstate";
 
 // HTML element constants
 
 const operationOutput = document.querySelector(".operation");
 const output = document.querySelector(".result");
 
-// IO functions
+// The calculator state machine
 
-function writeOutput() {
-  if (outputValue.length > 13) {
-    if (Button.isInput(lastAction)) {
-      outputValue = outputValue.substr(0, 13);
-    } else if (outputValue.indexOf(".") < 0 || outputValue.indexOf(".") >= 12) {
-      clear();
-      outputValue = "ERROR";
-    } else {
-      outputValue = outputValue.substr(0, 13);
-    }
+const calculatorService = interpret(CalculatorMachine).onTransition((state) => {
+  let context = state.context;
+
+  console.log(
+    `State:       ${state.value} \n` +
+      `1st Operand: ${context.firstOperand} \n` +
+      `2nd Operand: ${context.secondOperand} \n` +
+      `Operator:    ${context.selectedOperator} \n` +
+      `Display:     ${context.display}`
+  );
+
+  var operationOutputText = "";
+  if (context.firstOperand !== undefined) {
+    operationOutputText += context.firstOperand;
+  }
+  if (context.selectedOperator !== undefined) {
+    operationOutputText += ` ${Button.toString(context.selectedOperator)}`;
+  }
+  if (context.secondOperand !== undefined) {
+    operationOutputText += ` ${context.secondOperand}`;
   }
 
-  output.innerText = outputValue;
-  operationOutput.innerText = operationOutputValue;
-  operationOutputValue = "";
-}
+  operationOutput.innerText = operationOutputText;
+  output.innerText = context.display;
+});
 
-// Calculator functions
+// Input handler
 
-function handleNumber(inputValue) {
-  if (Button.isInput(lastAction)) {
-    if (outputValue === "0") {
-      outputValue = inputValue;
-    } else {
-      outputValue += inputValue;
-    }
-  } else if (Button.isOperator(lastAction)) {
-    outputValue = inputValue;
+function handleButtonInput(buttonValue) {
+  let eventName = convertButtonValueToEventName(buttonValue);
+
+  if (eventName) {
+    calculatorService.send({ type: eventName, value: buttonValue });
   } else {
-    clear();
-    outputValue = inputValue;
+    alert(`Error: button value "${buttonValue}" is not valid.`);
   }
 }
 
-function handleOperator(inputValue) {
-  if (Button.isInput(lastAction)) {
-    runningTotal = currentOperand;
-    currentOperand = new Decimal(outputValue);
-    execute();
-  }
-  selectedOperator = inputValue;
-}
-
-function clear() {
-  selectedOperator = undefined;
-  runningTotal = new Decimal(0);
-  currentOperand = new Decimal(0);
-  outputValue = "0";
-  operationOutputValue = "";
-}
-
-function backspace() {
-  if (lastAction == Button.EQUALS) {
-    clear();
-  } else if (!Button.isInput(lastAction) || outputValue.length <= 1) {
-    outputValue = "0";
-  } else {
-    outputValue = outputValue.slice(0, -1);
-  }
-}
-
-function decimal() {
-  if (outputValue.indexOf(".") < 0) {
-    outputValue += ".";
-  }
-}
-
-function equals() {
-  if (Button.isOperator(lastAction)) {
-    return;
-  }
-  if (Button.isInput(lastAction)) {
-    currentOperand = new Decimal(outputValue);
-  }
-  execute();
-}
-
-function execute() {
-  if (selectedOperator) {
-    operationOutputValue = `${runningTotal
-      .toString()
-      .substr(0, 13)} ${Button.toString(selectedOperator)} ${currentOperand} =`;
-  }
-
-  switch (selectedOperator) {
-    case Button.DIVIDE:
-      runningTotal = runningTotal.dividedBy(currentOperand);
-      break;
-    case Button.MULTIPLY:
-      runningTotal = runningTotal.times(currentOperand);
-      break;
-    case Button.SUBTRACT:
-      runningTotal = runningTotal.minus(currentOperand);
-      break;
-    case Button.ADD:
-      runningTotal = runningTotal.plus(currentOperand);
-      break;
-    case undefined:
-      runningTotal = currentOperand;
-      break;
+function convertButtonValueToEventName(buttonValue) {
+  switch (true) {
+    case Button.isNumber(buttonValue):
+      return "NUMBER";
+    case Button.isOperator(buttonValue):
+      return "OPERATOR";
+    case Button.EQUALS == buttonValue:
+      return "EQUALS";
+    case Button.BACKSPACE == buttonValue:
+      return "DELETE";
+    case Button.DECIMAL == buttonValue:
+      return "DECIMAL";
+    case Button.CLEAR == buttonValue:
+      return "CLEAR";
     default:
-      alert(`Error: operator "${selectedOperator}" is not valid.`);
-      return;
+      return undefined;
   }
-
-  outputValue = runningTotal.toString();
 }
 
 // Init
@@ -131,7 +72,7 @@ function execute() {
 function init() {
   document.querySelector(".calc").addEventListener("click", function (event) {
     if (event.target.tagName === "BUTTON") {
-      buttonClicked(event.target.value);
+      handleButtonInput(event.target.value);
     }
   });
   document
@@ -139,34 +80,9 @@ function init() {
     .addEventListener("click", function () {
       document.querySelector("#container").classList.toggle("dark-mode");
     });
+  // Set options for Decimal.js
+  Decimal.set({ toExpPos: 15, toExpNeg: -14 });
+  calculatorService.start();
 }
 
 init();
-
-function buttonClicked(buttonValue) {
-  inputHandler(buttonValue);
-  writeOutput();
-  console.log(
-    `State after "${buttonValue}": operator: ${selectedOperator}, total: ${runningTotal.toString()}, operand: ${currentOperand.toString()}, last action: ${lastAction}`
-  );
-}
-
-function inputHandler(buttonValue) {
-  if (Button.isNumber(buttonValue)) {
-    handleNumber(buttonValue);
-  } else if (Button.isOperator(buttonValue)) {
-    handleOperator(buttonValue);
-  } else if (buttonValue == Button.CLEAR) {
-    clear();
-  } else if (buttonValue == Button.BACKSPACE) {
-    backspace();
-  } else if (buttonValue == Button.DECIMAL) {
-    decimal();
-  } else if (buttonValue == Button.EQUALS) {
-    equals();
-  } else {
-    alert(`Error: operator "${buttonValue}" is not valid.`);
-    return;
-  }
-  lastAction = buttonValue;
-}
