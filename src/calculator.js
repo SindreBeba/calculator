@@ -81,7 +81,7 @@ function init() {
       document.querySelector("#container").classList.toggle("dark-mode");
     });
   // Set options for Decimal.js
-  Decimal.set({ toExpPos: 15, toExpNeg: -14 });
+  Decimal.set({ toExpPos: 15, toExpNeg: -14, precision: 15 });
   calculatorService.start();
 }
 
