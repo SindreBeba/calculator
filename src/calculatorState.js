@@ -7,30 +7,26 @@ function calculate(firstOperand, secondOperand, operator) {
   switch (operator) {
     case Button.DIVIDE:
       // Return an error when dividing by zero
-      result =
-        secondOperand == 0
-          ? "DIV/0 ERROR"
-          : firstOperand.dividedBy(secondOperand).toString();
+      if (secondOperand == 0) return undefined;
+      result = firstOperand.dividedBy(secondOperand);
       break;
     case Button.MULTIPLY:
-      result = firstOperand.times(secondOperand).toString();
+      result = firstOperand.times(secondOperand);
       break;
     case Button.SUBTRACT:
-      result = firstOperand.minus(secondOperand).toString();
+      result = firstOperand.minus(secondOperand);
       break;
     case Button.ADD:
-      result = firstOperand.plus(secondOperand).toString();
+      result = firstOperand.plus(secondOperand);
       break;
     default:
-      result = "OPERATOR ERROR";
+      return undefined;
   }
-  // Return an error when the result is too large or small
-  if (result.indexOf("e+") >= 0) {
-    result = result.charAt(0) == "-" ? "MIN ERROR" : "MAX ERROR";
-  }
-  // Return an error when the result contains too many decimals
-  if (result.indexOf("e-") >= 0) {
-    result = "DECIMAL ERROR";
+  let resultAsString = result.toSignificantDigits(15).toString();
+  // Return an error when the result is too large or small,
+  // or contains too many decimals
+  if (resultAsString.indexOf("e") >= 0) {
+    result = undefined;
   }
   return result;
 }
@@ -62,6 +58,7 @@ export const CalculatorMachine = createMachine(
     context: {
       firstOperand: undefined,
       secondOperand: undefined,
+      result: undefined,
       selectedOperator: undefined,
       display: "0",
     },
@@ -106,7 +103,7 @@ export const CalculatorMachine = createMachine(
           },
           EQUALS: {
             target: "showResults",
-            actions: ["saveSecondOperand", "execute"],
+            actions: ["saveSecondOperand", "execute", "appendResultToDisplay"],
           },
           CLEAR: {
             target: "editFirstOperand",
@@ -130,7 +127,8 @@ export const CalculatorMachine = createMachine(
             actions: [
               "saveSecondOperand",
               "execute",
-              "saveFirstOperand",
+              "appendResultToDisplay",
+              "saveResultAsFirstOperand",
               "saveOperator",
               "resetSecondOperand",
             ],
@@ -140,7 +138,7 @@ export const CalculatorMachine = createMachine(
           },
           EQUALS: {
             target: "showResults",
-            actions: ["saveSecondOperand", "execute"],
+            actions: ["saveSecondOperand", "execute", "appendResultToDisplay"],
           },
           CLEAR: {
             target: "editFirstOperand",
@@ -161,12 +159,20 @@ export const CalculatorMachine = createMachine(
           OPERATOR: {
             cond: "noError",
             target: "editOperator",
-            actions: ["resetSecondOperand", "saveFirstOperand", "saveOperator"],
+            actions: [
+              "resetSecondOperand",
+              "saveResultAsFirstOperand",
+              "saveOperator",
+            ],
           },
           EQUALS: {
             cond: "noError",
             target: "showResults",
-            actions: ["saveFirstOperand", "execute"],
+            actions: [
+              "saveResultAsFirstOperand",
+              "execute",
+              "appendResultToDisplay",
+            ],
           },
           CLEAR: {
             target: "editFirstOperand",
@@ -202,6 +208,12 @@ export const CalculatorMachine = createMachine(
             ? context.display + "."
             : context.display,
       }),
+      appendResultToDisplay: assign({
+        display: (context) =>
+          context.result
+            ? context.result.toSignificantDigits(15).toString()
+            : "ERROR",
+      }),
 
       // Save actions //////////////////////////////////////////////////////////
 
@@ -214,12 +226,17 @@ export const CalculatorMachine = createMachine(
       saveOperator: assign({
         selectedOperator: (context, event) => event.value,
       }),
+      saveResultAsFirstOperand: assign({
+        firstOperand: (context) => context.result,
+        result: () => undefined,
+      }),
 
       // Reset actions /////////////////////////////////////////////////////////
 
       resetAll: assign({
         firstOperand: () => undefined,
         secondOperand: () => undefined,
+        result: () => undefined,
         selectedOperator: () => undefined,
         display: () => "0",
       }),
@@ -239,7 +256,7 @@ export const CalculatorMachine = createMachine(
       // Execute actions ///////////////////////////////////////////////////////
 
       execute: assign({
-        display: (context) => {
+        result: (context) => {
           return calculate(
             context.firstOperand,
             context.secondOperand,

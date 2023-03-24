@@ -17,6 +17,7 @@ const calculatorService = interpret(CalculatorMachine).onTransition((state) => {
     `State:       ${state.value} \n` +
       `1st Operand: ${context.firstOperand} \n` +
       `2nd Operand: ${context.secondOperand} \n` +
+      `Result:      ${context.result} \n` +
       `Operator:    ${context.selectedOperator} \n` +
       `Display:     ${context.display}`
   );
@@ -81,7 +82,7 @@ function init() {
       document.querySelector("#container").classList.toggle("dark-mode");
     });
   // Set options for Decimal.js
-  Decimal.set({ toExpPos: 15, toExpNeg: -14, precision: 15 });
+  Decimal.set({ toExpPos: 15, toExpNeg: -14, precision: 20 });
   calculatorService.start();
 }
 
