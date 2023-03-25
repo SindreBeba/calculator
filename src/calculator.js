@@ -61,6 +61,8 @@ function convertButtonValueToEventName(buttonValue) {
       return "DELETE";
     case Button.DECIMAL == buttonValue:
       return "DECIMAL";
+    case Button.SIGN == buttonValue:
+      return "SIGN";
     case Button.CLEAR == buttonValue:
       return "CLEAR";
     default:

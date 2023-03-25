@@ -10,6 +10,7 @@ export const Button = Object.freeze({
   BACKSPACE: "back",
   EQUALS: "equals",
   DECIMAL: "decimal",
+  SIGN: "sign",
 
   isOperator(value) {
     return [this.ADD, this.SUBTRACT, this.MULTIPLY, this.DIVIDE].includes(

@@ -75,6 +75,9 @@ export const CalculatorMachine = createMachine(
           DECIMAL: {
             actions: ["appendDecimalPoint"],
           },
+          SIGN: {
+            actions: ["negateDisplay"],
+          },
           OPERATOR: [
             {
               cond: "canAppendMinus",
@@ -129,6 +132,9 @@ export const CalculatorMachine = createMachine(
           },
           DECIMAL: {
             actions: ["appendDecimalPoint"],
+          },
+          SIGN: {
+            actions: ["negateDisplay"],
           },
           OPERATOR: {
             target: "editOperator",
@@ -197,16 +203,21 @@ export const CalculatorMachine = createMachine(
 
       appendToDisplay: assign({
         display: (context, event) => {
-          if (context.display === "0") {
+          let display = context.display;
+          if (display === "0") {
             return event.value;
           }
-          if (context.display === "-0") {
+          if (display === "-0") {
             return "-" + event.value;
           }
-          if (context.display.length >= 15) {
-            return context.display;
+          // Digit limit is 15, but does not include "-"
+          if (display.length == 15 && display.indexOf("-") < 0) {
+            return display;
           }
-          return context.display + event.value;
+          if (display.length >= 16) {
+            return display;
+          }
+          return display + event.value;
         },
       }),
       removeFromDisplay: assign({
@@ -234,6 +245,12 @@ export const CalculatorMachine = createMachine(
           context.result
             ? context.result.toSignificantDigits(15).toString()
             : "ERROR",
+      }),
+      negateDisplay: assign({
+        display: (context) =>
+          context.display.indexOf("-") < 0
+            ? "-" + context.display
+            : context.display.slice(1),
       }),
 
       // Save actions //////////////////////////////////////////////////////////
