@@ -32,6 +32,8 @@ function calculate(firstOperand, secondOperand, operator) {
 }
 
 const noError = (context) => context.display.indexOf("ERROR") < 0;
+const canAppendMinus = (context, event) =>
+  event.value == Button.SUBTRACT && context.display === "0";
 
 /*
  * A state machine representing the calculator.
@@ -73,10 +75,16 @@ export const CalculatorMachine = createMachine(
           DECIMAL: {
             actions: ["appendDecimalPoint"],
           },
-          OPERATOR: {
-            target: "editOperator",
-            actions: ["saveFirstOperand", "saveOperator"],
-          },
+          OPERATOR: [
+            {
+              cond: "canAppendMinus",
+              actions: "appendMinus",
+            },
+            {
+              target: "editOperator",
+              actions: ["saveFirstOperand", "saveOperator"],
+            },
+          ],
           DELETE: {
             actions: ["removeFromDisplay"],
           },
@@ -183,7 +191,7 @@ export const CalculatorMachine = createMachine(
     },
   },
   {
-    guards: { noError },
+    guards: { noError, canAppendMinus },
     actions: {
       // Display actions ///////////////////////////////////////////////////////
 
@@ -192,6 +200,9 @@ export const CalculatorMachine = createMachine(
           if (context.display === "0") {
             return event.value;
           }
+          if (context.display === "-0") {
+            return "-" + event.value;
+          }
           if (context.display.length >= 15) {
             return context.display;
           }
@@ -199,14 +210,24 @@ export const CalculatorMachine = createMachine(
         },
       }),
       removeFromDisplay: assign({
-        display: (context) =>
-          context.display.length <= 1 ? "0" : context.display.slice(0, -1),
+        display: (context) => {
+          let display = context.display;
+          // Check for negative number with single digit
+          if (display.length == 2 && display.indexOf("-") >= 0) {
+            return "0";
+          }
+          return display.length <= 1 ? "0" : display.slice(0, -1);
+        },
       }),
       appendDecimalPoint: assign({
         display: (context) =>
           context.display.indexOf(".") < 0
             ? context.display + "."
             : context.display,
+      }),
+      appendMinus: assign({
+        display: (context) =>
+          context.display === "0" ? "-0" : context.display,
       }),
       appendResultToDisplay: assign({
         display: (context) =>
