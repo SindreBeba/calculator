@@ -24,13 +24,17 @@ const calculatorService = interpret(CalculatorMachine).onTransition((state) => {
 
   var operationOutputText = "";
   if (context.firstOperand !== undefined) {
-    operationOutputText += context.firstOperand;
+    operationOutputText += context.firstOperand
+      .toSignificantDigits(15)
+      .toString();
   }
   if (context.selectedOperator !== undefined) {
     operationOutputText += ` ${Button.toString(context.selectedOperator)}`;
   }
   if (context.secondOperand !== undefined) {
-    operationOutputText += ` ${context.secondOperand}`;
+    operationOutputText += ` ${context.secondOperand
+      .toSignificantDigits(15)
+      .toString()}`;
   }
 
   operationOutput.innerText = operationOutputText;
