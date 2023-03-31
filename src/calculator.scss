@@ -2,24 +2,25 @@
 
 /* Color variables */
 
-$background-color: #fcfcfc;
-$output-bg-color: #eaeaea;
-$btn-color: #d2d2d2;
+$background-color: #fafafa;
+$output-bg-color: #e8e8e8;
+$btn-color: #d0d3d6;
 $header-bg-color: #444444;
 $text-color: #222222;
-$btn-alt-color: rgb(240, 150, 75);
+$btn-alt-color: #b0b8bf;
+$btn-red-color: #b03030;
 
 /* Size variables */
 $site-header-margin-bottom: 30px;
 $calc-height: 600px;
 $calc-width: 400px;
-$calc-gap: 7.5px;
+$calc-gap: 10px;
 $output-padding: 15px;
 $output-border-radius: 25px;
 $operation-font-size: 18px;
 $result-font-size: 35px;
-$btn-border-radius: 35px;
-$btn-font-size: 30px;
+$btn-border-radius: 16px;
+$btn-font-size: 26px;
 
 $vw-scale: math.div(131.25vw,600px);
 $vh-scale: math.div(85vh,600px);
@@ -153,17 +154,30 @@ body {
     flex: 2.05;
 }
 
-.btn:last-child {
+.btn-alt {
     background-color: $btn-alt-color;
     color: white;
 }
 
-.btn:last-child:hover {
+.btn-alt:hover {
     background-color: lighten($btn-alt-color, 5);
 }
 
-.btn:last-child:active {
+.btn-alt:active {
     background-color: darken($btn-alt-color, 5);
+}
+
+.btn-red {
+    background-color: $btn-red-color;
+    color: white;
+}
+
+.btn-red:hover {
+    background-color: lighten($btn-red-color, 5);
+}
+
+.btn-red:active {
+    background-color: darken($btn-red-color, 5);
 }
 
 @media (max-width: 457px) and (max-aspect-ratio: 2/3) {
@@ -248,7 +262,8 @@ body {
     $background-color: #262626;
     $output-bg-color: #2f2f2f;
     $btn-color: #3b3b3b;
-    $btn-alt-color: darken($btn-alt-color, 25);
+    $btn-alt-color: #505050;
+    $btn-red-color: #702020;
     $text-color: #fcfcfc;
 
     background-color: $background-color;
@@ -272,15 +287,27 @@ body {
         background-color: darken($btn-color, 5);
     }
 
-    .btn:last-child {
+    .btn-alt {
         background-color: $btn-alt-color;
     }
     
-    .btn:last-child:hover {
+    .btn-alt:hover {
         background-color: lighten($btn-alt-color, 5);
     }
     
-    .btn:last-child:active {
+    .btn-alt:active {
         background-color: darken($btn-alt-color, 5);
+    }
+
+    .btn-red {
+        background-color: $btn-red-color;
+    }
+    
+    .btn-red:hover {
+        background-color: lighten($btn-red-color, 5);
+    }
+    
+    .btn-red:active {
+        background-color: darken($btn-red-color, 5);
     }
 }

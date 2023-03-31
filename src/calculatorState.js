@@ -61,6 +61,7 @@ export const CalculatorMachine = createMachine(
       firstOperand: undefined,
       secondOperand: undefined,
       result: undefined,
+      memory: undefined,
       selectedOperator: undefined,
       display: "0",
     },
@@ -94,6 +95,18 @@ export const CalculatorMachine = createMachine(
           CLEAR: {
             actions: ["resetAll"],
           },
+          MEMORY_CLEAR: {
+            actions: ["resetMemory"],
+          },
+          MEMORY_RECALL: {
+            actions: ["setDisplayToMemory"],
+          },
+          MEMORY_PLUS: {
+            actions: ["addToMemory"],
+          },
+          MEMORY_MINUS: {
+            actions: ["subtractDisplayFromMemory"],
+          },
         },
       },
 
@@ -119,6 +132,18 @@ export const CalculatorMachine = createMachine(
           CLEAR: {
             target: "editFirstOperand",
             actions: ["resetAll"],
+          },
+          MEMORY_CLEAR: {
+            actions: ["resetMemory"],
+          },
+          MEMORY_RECALL: {
+            actions: ["setDisplayToMemory"],
+          },
+          MEMORY_PLUS: {
+            actions: ["addToMemory"],
+          },
+          MEMORY_MINUS: {
+            actions: ["subtractDisplayFromMemory"],
           },
         },
       },
@@ -158,6 +183,18 @@ export const CalculatorMachine = createMachine(
             target: "editFirstOperand",
             actions: ["resetAll"],
           },
+          MEMORY_CLEAR: {
+            actions: ["resetMemory"],
+          },
+          MEMORY_RECALL: {
+            actions: ["setDisplayToMemory"],
+          },
+          MEMORY_PLUS: {
+            actions: ["addToMemory"],
+          },
+          MEMORY_MINUS: {
+            actions: ["subtractDisplayFromMemory"],
+          },
         },
       },
 
@@ -191,6 +228,20 @@ export const CalculatorMachine = createMachine(
           CLEAR: {
             target: "editFirstOperand",
             actions: ["resetAll"],
+          },
+          MEMORY_CLEAR: {
+            actions: ["resetMemory"],
+          },
+          MEMORY_RECALL: {
+            actions: ["setDisplayToMemory"],
+          },
+          MEMORY_PLUS: {
+            cond: "noError",
+            actions: ["addToMemory"],
+          },
+          MEMORY_MINUS: {
+            cond: "noError",
+            actions: ["subtractDisplayFromMemory"],
           },
         },
       },
@@ -252,6 +303,12 @@ export const CalculatorMachine = createMachine(
             ? "-" + context.display
             : context.display.slice(1),
       }),
+      setDisplayToMemory: assign({
+        display: (context) =>
+          context.memory
+            ? context.memory.toSignificantDigits(15).toString()
+            : context.display,
+      }),
 
       // Save actions //////////////////////////////////////////////////////////
 
@@ -267,6 +324,24 @@ export const CalculatorMachine = createMachine(
       saveResultAsFirstOperand: assign({
         firstOperand: (context) => context.result,
         result: () => undefined,
+      }),
+      addToMemory: assign({
+        memory: (context) => {
+          let memoryValue = context.memory ? context.memory : new Decimal(0);
+          let addValue = context.result
+            ? context.result
+            : new Decimal(context.display);
+          return calculate(memoryValue, addValue, Button.ADD);
+        },
+      }),
+      subtractDisplayFromMemory: assign({
+        memory: (context) => {
+          let memoryValue = context.memory ? context.memory : new Decimal(0);
+          let subtractValue = context.result
+            ? context.result
+            : new Decimal(context.display);
+          return calculate(memoryValue, subtractValue, Button.SUBTRACT);
+        },
       }),
 
       // Reset actions /////////////////////////////////////////////////////////
@@ -289,6 +364,9 @@ export const CalculatorMachine = createMachine(
       }),
       resetDisplay: assign({
         display: () => "0",
+      }),
+      resetMemory: assign({
+        memory: () => undefined,
       }),
 
       // Execute actions ///////////////////////////////////////////////////////

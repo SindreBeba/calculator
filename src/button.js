@@ -11,6 +11,10 @@ export const Button = Object.freeze({
   EQUALS: "equals",
   DECIMAL: "decimal",
   SIGN: "sign",
+  MEMORY_CLEAR: "memory-clear",
+  MEMORY_RECALL: "memory-recall",
+  MEMORY_PLUS: "memory-plus",
+  MEMORY_MINUS: "memory-minus",
 
   isOperator(value) {
     return [this.ADD, this.SUBTRACT, this.MULTIPLY, this.DIVIDE].includes(

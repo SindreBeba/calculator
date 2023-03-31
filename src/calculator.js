@@ -18,6 +18,7 @@ const calculatorService = interpret(CalculatorMachine).onTransition((state) => {
       `1st Operand: ${context.firstOperand} \n` +
       `2nd Operand: ${context.secondOperand} \n` +
       `Result:      ${context.result} \n` +
+      `Memory:      ${context.memory} \n` +
       `Operator:    ${context.selectedOperator} \n` +
       `Display:     ${context.display}`
   );
@@ -69,6 +70,14 @@ function convertButtonValueToEventName(buttonValue) {
       return "SIGN";
     case Button.CLEAR == buttonValue:
       return "CLEAR";
+    case Button.MEMORY_CLEAR == buttonValue:
+      return "MEMORY_CLEAR";
+    case Button.MEMORY_RECALL == buttonValue:
+      return "MEMORY_RECALL";
+    case Button.MEMORY_PLUS == buttonValue:
+      return "MEMORY_PLUS";
+    case Button.MEMORY_MINUS == buttonValue:
+      return "MEMORY_MINUS";
     default:
       return undefined;
   }
